@@ -1,9 +1,9 @@
 package ru.netology.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 Во-вторых, List для хранения данных в репозитории в данной задача работает неэффективно, вам надо уметь быстро по id получать и удалять пост.
 Для этого надо использовать потокобезопасную реализацию Map. Используйте ConcurrentHashMap для этого.
 */
-
-public class PostRepository {
+@Repository
+public class PostRepositoryImpl implements PostRepository{
     private AtomicLong postCount = new AtomicLong(0);
     private ConcurrentHashMap<Long, Post> postMap = new ConcurrentHashMap<>();
 

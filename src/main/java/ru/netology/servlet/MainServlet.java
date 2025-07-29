@@ -1,32 +1,37 @@
 package ru.netology.servlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ru.netology.controller.PostController;
-import ru.netology.repository.PostRepository;
-import ru.netology.service.PostService;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/*
+curl -X POST -H "Content-Type: application/json" -d "{"id": 0, "content": "1234"}" http://localhost:8080/api/posts
+curl http://localhost:8080/api/posts
+curl -X DELETE http://localhost:8080/api/posts/2
+* */
+
 public class MainServlet extends HttpServlet {
-    private PostController controller;
+
     private static final String GET = "GET";
     private static final String POST = "POST";
     private static final String DELETE = "DELETE";
     private static final String POST_PATH = "/api/posts";
     private static final String POST_ID_PATH = "/api/posts/\\d+";
 
-    /*
-    в классе MainServlet все строковые ресурсы(объекта класса String, которые всегда постоянны) должны быть вынесены в поля класса. Тогда рефакторинг будет успешен
-все строковые константы, которые вы выносите, должны быть private static final полями, если они используются только в классе, где они задекларированы.
-    * */
+
+    PostController controller;
+
 
     @Override
-    final public void init() {
-        final var repository = new PostRepository();
-        final var service = new PostService(repository);
-        controller = new PostController(service);
+    final public void init() throws ServletException {
+        super.init();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
     @Override
@@ -38,14 +43,12 @@ public class MainServlet extends HttpServlet {
             // primitive routing
             if (method.equals(GET)) {
                 doGet(path, resp);
-            }
-            if (method.equals(POST)) {
+            } else if (POST.equals(method)) {
                 doPost(path, req, resp);
-            }
-            if (method.equals(DELETE)) {
+            } else if (method.equals(DELETE)) {
                 doDelete(path, resp);
-            }
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            } else {System.out.println(method);
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);}
         } catch (Exception e) {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
