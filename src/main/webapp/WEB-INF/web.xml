@@ -6,21 +6,21 @@
     <response-character-encoding>UTF-8</response-character-encoding>
     <!-- определение servlet'а -->
     <servlet>
-        <servlet-name>main</servlet-name>
+        <servlet-name>MainServlet</servlet-name>
         <servlet-class>ru.netology.servlet.MainServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <!-- mapping - привязка к определённому URL-->
     <servlet-mapping>
-        <servlet-name>main</servlet-name>
+        <servlet-name>MainServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>dispatcher</servlet-name>
+        <servlet-name>DispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>2</load-on-startup>
     </servlet>
 </web-app>
 

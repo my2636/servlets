@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ru.netology.controller.PostController;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +17,7 @@ curl -X POST -H "Content-Type: application/json" -d "{"id": 0, "content": "1234"
 curl http://localhost:8080/api/posts
 curl -X DELETE http://localhost:8080/api/posts/2
 * */
-
+@WebServlet("/mainservlet")
 public class MainServlet extends HttpServlet {
 
     private static final String GET = "GET";
@@ -25,12 +27,12 @@ public class MainServlet extends HttpServlet {
     private static final String POST_ID_PATH = "/api/posts/\\d+";
 
 
-    PostController controller;
-
+    @Autowired
+    private PostController controller;
 
     @Override
-    final public void init() throws ServletException {
-        super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
@@ -40,6 +42,8 @@ public class MainServlet extends HttpServlet {
         try {
             final var path = req.getRequestURI();
             final var method = req.getMethod();
+            System.out.println(method);
+            System.out.println(path);
             // primitive routing
             if (method.equals(GET)) {
                 doGet(path, resp);
@@ -51,7 +55,7 @@ public class MainServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);}
         } catch (Exception e) {
             e.printStackTrace();
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.setStatus(HttpServletResponse.SC_FOUND);
         }
     }
 
